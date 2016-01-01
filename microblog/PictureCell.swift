@@ -7,12 +7,21 @@
 //
 
 import UIKit
+import SDWebImage
 
 class PictureCell: UICollectionViewCell {
+    
+    @IBOutlet weak var imageView: UIImageView!
+    
+    var picUrl: NSURL? {
+        didSet {
+            imageView.sd_setImageWithURL(picUrl)
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        imageView.clipsToBounds = true
     }
 
 }

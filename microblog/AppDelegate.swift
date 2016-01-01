@@ -13,10 +13,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    func receiveSelectRootControllerNotification(notification: NSNotification) {
+        window?.rootViewController = (notification.object == nil ?MainViewController() : WelcomeViewController())
+    }
+    
+    private func isNewVersion() -> Bool {
+        let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]?.doubleValue
+        let key = "version"
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let lastVersion = userDefaults.doubleForKey(key)
+        if currentVersion > lastVersion {
+            userDefaults.setDouble(currentVersion!, forKey: key)
+            userDefaults.synchronize()
+            return true
+        }
+        return false
+    }
+    
+    private func selectRootController() {
+        if AccountViewModel.loadAccount() == nil {
+            window?.rootViewController = MainViewController()
+        } else {
+            if isNewVersion() {
+                window?.rootViewController = NewFeatureViewController(nibName: "NewFeatureViewController", bundle: nil)
+            } else {
+                window?.rootViewController = WelcomeViewController()
+            }
+        }
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        window = UIWindow(frame: KScreenBounds)
+        window?.backgroundColor = UIColor.whiteColor()
+        
+        selectRootController()
+        
+        window?.makeKeyAndVisible()
+        
+        UITabBar.appearance().tintColor = UIColor.orangeColor()
+        UINavigationBar.appearance().tintColor = UIColor.orangeColor()
+        UINavigationBar.appearance().translucent = false
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveSelectRootControllerNotification:", name: KSelectRootControllerNotification, object: nil)
+        
         return true
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -40,7 +85,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
 
 }
 

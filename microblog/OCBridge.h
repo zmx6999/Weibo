@@ -11,3 +11,5 @@
 
 
 #endif /* OCBridge_h */
+
+#import "SDPhotoBrowser.h"

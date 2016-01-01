@@ -10,12 +10,8 @@ import UIKit
 
 class BottomView: UIView {
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    static func view() -> BottomView {
+        return NSBundle.mainBundle().loadNibNamed("BottomView", owner: nil, options: nil).first as! BottomView
     }
-    */
 
 }

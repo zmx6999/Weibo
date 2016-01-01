@@ -1,3 +1,4 @@
+
 //
 //  RetweetTopView.swift
 //  microblog
@@ -7,15 +8,32 @@
 //
 
 import UIKit
+import FFLabel
 
-class RetweetTopView: UIView {
+class RetweetTopView: UIView, FFLabelDelegate {
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    @IBOutlet weak var textLabel: FFLabel!
+    
+    var status: Status? {
+        didSet {
+            textLabel.attributedText = EmotionManager.sharedManager.fullText("@" + (status?.user?.name ?? "") + ": " + (status?.text ?? ""))
+        }
     }
-    */
-
+    
+    static func view() -> RetweetTopView {
+        return NSBundle.mainBundle().loadNibNamed("RetweetTopView", owner: nil, options: nil).first as! RetweetTopView
+    }
+    
+    override func awakeFromNib() {
+        textLabel.labelDelegate = self
+    }
+    
+    func labelDidSelectedLinkText(label: FFLabel, text: String) {
+        if text.hasPrefix("http") {
+            let wvc = HomeWebViewController()
+            wvc.urlStr = text
+            getNavigationController()?.pushViewController(wvc, animated: true)
+        }
+    }
+    
 }

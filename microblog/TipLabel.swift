@@ -10,12 +10,14 @@ import UIKit
 
 class TipLabel: UILabel {
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    var count: Int = 0 {
+        didSet {
+            if count < 1 {
+                text = "没有新的微博"
+            } else {
+                text = "\(count)条新的微博"
+            }
+        }
     }
-    */
 
 }

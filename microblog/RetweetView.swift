@@ -7,15 +7,68 @@
 //
 
 import UIKit
+import SnapKit
 
 class RetweetView: UIView {
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    weak var topView: RetweetTopView!
+    
+    weak var pictureView: PictureView!
+    
+    var bottomConstraint: Constraint?
+    
+    var status: Status? {
+        didSet {
+            topView.status = status
+            
+            bottomConstraint?.uninstall()
+            if let OPicUrls = status?.picUrls where OPicUrls.count > 0 {
+                pictureView.picUrls = OPicUrls
+                pictureView.hidden = false
+                snp_updateConstraints(closure: { (make) -> Void in
+                    self.bottomConstraint = make.bottom.equalTo(pictureView.snp_bottom).offset(KStatusCellMargin).constraint
+                })
+            } else {
+                pictureView.hidden = true
+                snp_updateConstraints(closure: { (make) -> Void in
+                    self.bottomConstraint = make.bottom.equalTo(topView.snp_bottom).constraint
+                })
+            }
+        }
     }
-    */
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = UIColor(white: 0.93, alpha: 1.0)
+        setupUI()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    private func setupUI() {
+        let tv = RetweetTopView.view()
+        topView = tv
+        addSubview(topView)
+        
+        let pv = PictureView.view()
+        pictureView = pv
+        addSubview(pictureView)
+        
+        topView.snp_makeConstraints { (make) -> Void in
+            make.top.left.right.equalTo(self)
+        }
+        
+        pictureView.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(topView.snp_bottom)
+            make.left.equalTo(self.snp_left).offset(KStatusCellMargin)
+        }
+        
+        snp_makeConstraints { (make) -> Void in
+            self.bottomConstraint = make.bottom.equalTo(pictureView.snp_bottom).offset(KStatusCellMargin).constraint
+        }
+    }
 
 }

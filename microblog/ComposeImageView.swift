@@ -10,12 +10,17 @@ import UIKit
 
 class ComposeImageView: UIView {
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    weak var contentView: ComposeImageContentView?
+    
+    override func awakeFromNib() {
+        let cv = NSBundle.mainBundle().loadNibNamed("ComposeImageContentView", owner: nil, options: nil).first as! ComposeImageContentView
+        contentView = cv
+        addSubview(contentView!)
     }
-    */
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView?.frame = bounds
+    }
 
 }

@@ -7,20 +7,37 @@
 //
 
 import UIKit
+import SVProgressHUD
 
-class HomeWebViewController: UIViewController {
+class HomeWebViewController: UIViewController, UIWebViewDelegate {
+    
+    var urlStr: String?
+    
+    override func loadView() {
+        view = UIWebView()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        let webView = view as! UIWebView
+        webView.delegate = self
+        if let url = NSURL(string: urlStr ?? "") {
+            webView.loadRequest(NSURLRequest(URL: url))
+        }
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        SVProgressHUD.dismiss()
+    }
+    
+    func webViewDidStartLoad(webView: UIWebView) {
+        SVProgressHUD.show()
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        SVProgressHUD.dismiss()
+    }
 
     /*
     // MARK: - Navigation
