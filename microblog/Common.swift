@@ -26,3 +26,6 @@ let getColor = { (red: Int, green: Int, blue: Int) -> UIColor in
 }
 
 let KSelectRootControllerNotification = "SelectRootControllerNotification"
+
+let key = "version"
+let userDefaults = NSUserDefaults.standardUserDefaults()

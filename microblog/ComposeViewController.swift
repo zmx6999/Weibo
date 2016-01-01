@@ -42,31 +42,37 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     @objc private func close() {
+        SVProgressHUD.dismiss()
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     @objc private func send() {
+        SVProgressHUD.show()
         let networkTool = NetworkTool.sharedTool
         let params = NSMutableDictionary()
         params["access_token"] = AccountViewModel.loadAccount()?.access_token
         params["status"] = textView.fullText()
         if imageView.contentView?.images?.count > 0 {
             networkTool.uploadWithImage("https://upload.api.weibo.com/2/statuses/upload.json", params: params, imageData: UIImageJPEGRepresentation((imageView.contentView?.images?.first)!, 1.0), finish: { (success) -> Void in
+                SVProgressHUD.dismiss()
                 if success {
-                    SVProgressHUD.showSuccessWithStatus("发送成功")
-                    self.close()
+                    self.dismissViewControllerAnimated(true, completion: { () -> Void in
+                        SVProgressHUD.showSuccessWithStatus("发表成功")
+                    })
                 } else {
                     SVProgressHUD.showErrorWithStatus("发送失败")
                 }
             })
         } else {
             networkTool.request(HTTPMethod.POST, urlStr: "2/statuses/update.json", params: params, finish: { (responseObject, error) -> Void in
+                SVProgressHUD.dismiss()
                 if error != nil {
                     print("\(error)")
                     return
                 }
-                SVProgressHUD.showSuccessWithStatus("发表成功")
-                self.close()
+                self.dismissViewControllerAnimated(true, completion: { () -> Void in
+                    SVProgressHUD.showSuccessWithStatus("发表成功")
+                })
             })
         }
     }

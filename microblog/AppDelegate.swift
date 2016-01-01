@@ -19,8 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func isNewVersion() -> Bool {
         let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]?.doubleValue
-        let key = "version"
-        let userDefaults = NSUserDefaults.standardUserDefaults()
         let lastVersion = userDefaults.doubleForKey(key)
         if currentVersion > lastVersion {
             userDefaults.setDouble(currentVersion!, forKey: key)

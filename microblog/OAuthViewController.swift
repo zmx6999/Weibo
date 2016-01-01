@@ -86,6 +86,11 @@ class OAuthViewController: UIViewController, UIWebViewDelegate {
             account.avatar_large = responseObject!["avatar_large"] as? String
             account.name = responseObject!["name"] as? String
             AccountViewModel.saveAccount(account)
+            
+            let currentVersion = NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]?.doubleValue
+            userDefaults.setDouble(currentVersion!, forKey: key)
+            userDefaults.synchronize()
+            
             self.dismissViewControllerAnimated(false, completion: { () -> Void in
                 NSNotificationCenter.defaultCenter().postNotificationName(KSelectRootControllerNotification, object: "welcome")
             })
